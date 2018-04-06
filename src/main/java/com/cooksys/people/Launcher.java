@@ -13,5 +13,7 @@ public class Launcher {
 		for(Peoples p : PeoplesDao.findInterestGroup(interest, location)){
 			System.out.println(p);
 		}
+		
+		System.out.println(PeoplesDao.getPeopleId(0));
 	}
 }

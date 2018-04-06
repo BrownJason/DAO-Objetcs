@@ -31,7 +31,7 @@ public class PeoplesDao {
 		return people;
 	}
 	
-	public static String savePeople(Peoples people) {
+	public static void savePeople(Peoples people) {
 
 		int size = 0;
 		ResultSet ress = ConnectionManager.executeQuery("SELECT * FROM person");
@@ -64,8 +64,7 @@ public class PeoplesDao {
 				String interestUpdate = "UPDATE interest SET title='" + new Interests(ints.getTitle()) + "' WHERE id=" + new Interests(ints.getId()) + ";";
 				
 				ConnectionManager.executeUpdate(interestUpdate);
-				
-				return "Success!";
+
 			} else if (people.getId() == null) {
 				String sqlInsert = "INSERT INTO person VALUES (" + ress.getRow() +", "
 						+ "'" + people.getFirstName() + "', '" + people.getLastName() + "', "
@@ -82,8 +81,6 @@ public class PeoplesDao {
 				String interestsInsert = "INSERT INTO interest VALUES (" + ress.getRow() + ", '" + InterestDao.getInterestId(0).get(0).getTitle() + "')";
 				
 				ConnectionManager.executeUpdate(interestsInsert);
-				
-				return "Success!";
 			} else if(people.getId() != null && people.getId() > (size+1)) {
 				System.out.println("Person id out of range!");
 				throw new SQLException();
@@ -92,15 +89,13 @@ public class PeoplesDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return "Success!";
 	}
 	
 	public static Set<Peoples> findInterestGroup(Interests interest, Locations location){
 		
 		ResultSet results = ConnectionManager.executeQuery("SELECT * FROM person"
-				+ " JOIN interest ON person.interest_id = interest.id"
-				+ " JOIN locations ON person.id = locations.person_id"
+				+ " INNER JOIN interest ON person.interest_id = interest.id"
+				+ " INNER JOIN locations ON person.id = locations.person_id"
 				+ " WHERE title='" + interest.getTitle() + "' AND state='" + location.getState() + "';");
 		
 		Set<Peoples> people = new HashSet<Peoples>();
